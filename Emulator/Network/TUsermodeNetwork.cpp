@@ -1128,9 +1128,21 @@ public:
 					strerror(errno));
 				return -1;
 			}
-			// No connection could be established
-			if (err == -1 || err == 0)
-			{ // error or timeout
+			// A writable socket may still have failed (for example, iOS Local Network denial).
+			int socketError = 0;
+			socklen_t socketErrorSize = sizeof(socketError);
+			if (err > 0)
+			{
+#if TARGET_OS_WIN32
+				err = ::getsockopt(mSocket, SOL_SOCKET, SO_ERROR, reinterpret_cast<char*>(&socketError), &socketErrorSize);
+#else
+				err = ::getsockopt(mSocket, SOL_SOCKET, SO_ERROR, &socketError, &socketErrorSize);
+#endif
+			}
+			if (err <= 0 || socketError != 0)
+			{
+				if (socketError != 0)
+					errno = socketError;
 				LOG_PROTOCOL("| TTCPPacketHandler::connect: Can't connect (::select) (%d.%d.%d.%d:%d): %s.",
 					theirIP >> 24, (theirIP >> 16) & 255, (theirIP >> 8) & 255, theirIP & 255, theirPort,
 					strerror(errno));

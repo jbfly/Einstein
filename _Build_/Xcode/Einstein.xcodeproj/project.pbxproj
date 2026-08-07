@@ -93,6 +93,7 @@
 		2389E98E1A1E4D4A0001A8C5 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1CAFBF41241F7E600A0382E /* AudioToolbox.framework */; };
 		2389E98F1A1E4D4A0001A8C5 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1CAFCF8124200C100A0382E /* CoreGraphics.framework */; };
 		2389E9911A1E4D4A0001A8C5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C97C7E1B124282A600CDCD05 /* Foundation.framework */; };
+		E8DB57C9BA3A445690F8621B /* Network.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8DB57CABA3A445690F8621B /* Network.framework */; };
 		288F814A288C140D007CC87B /* TPrinterManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 288F8145288C140D007CC87B /* TPrinterManager.cpp */; };
 		288F814B288C140D007CC87B /* TPrinterManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 288F8145288C140D007CC87B /* TPrinterManager.cpp */; };
 		288F8153288C1984007CC87B /* TIOSPrinterManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 288F8150288C1983007CC87B /* TIOSPrinterManager.mm */; };
@@ -802,6 +803,7 @@
 		F156B8141CFA48BD004661E8 /* TCocoaListenerWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCocoaListenerWindow.h; sourceTree = "<group>"; };
 		F156B8151CFA48BD004661E8 /* TCocoaListenerWindow.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TCocoaListenerWindow.mm; sourceTree = "<group>"; };
 		F15858B51A2E3C8C00D72203 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.1.sdk/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
+		E8DB57CABA3A445690F8621B /* Network.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Network.framework; path = System/Library/Frameworks/Network.framework; sourceTree = SDKROOT; };
 		F1647FC313198E6A001603BE /* TCocoaMonitorController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCocoaMonitorController.h; sourceTree = "<group>"; };
 		F1647FC413198E6A001603BE /* TCocoaMonitorController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TCocoaMonitorController.mm; sourceTree = "<group>"; };
 		F164801813199758001603BE /* TMacMonitor.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TMacMonitor.mm; sourceTree = "<group>"; };
@@ -825,6 +827,7 @@
 				2389E98E1A1E4D4A0001A8C5 /* AudioToolbox.framework in Frameworks */,
 				2389E98F1A1E4D4A0001A8C5 /* CoreGraphics.framework in Frameworks */,
 				2389E9911A1E4D4A0001A8C5 /* Foundation.framework in Frameworks */,
+				E8DB57C9BA3A445690F8621B /* Network.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -35,6 +35,10 @@
 	<true/>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>Einstein connects the emulated Newton to servers on your local network.</string>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_einstein._tcp</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>Launch Screen</string>
 	<key>UIMainStoryboardFile</key>

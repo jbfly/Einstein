@@ -22,6 +22,7 @@
 // ==============================
 
 #import "iEinsteinViewController.h"
+#import <Network/Network.h>
 
 #include "Emulator/TEmulator.h"
 #include "Emulator/Log/TStdOutLog.h"
@@ -35,6 +36,19 @@
 #include "Emulator/Sound/TCoreAudioSoundManager.h"
 
 static const int kScreenResolutionFitToScreen = 9999;
+static nw_browser_t gLocalNetworkPermissionBrowser;
+
+static void
+RequestLocalNetworkPermission()
+{
+	nw_browse_descriptor_t descriptor = nw_browse_descriptor_create_bonjour_service("_einstein._tcp", NULL);
+	gLocalNetworkPermissionBrowser = nw_browser_create(descriptor, nw_parameters_create());
+	nw_browser_set_state_changed_handler(gLocalNetworkPermissionBrowser, ^(nw_browser_state_t state, nw_error_t error) {
+		if (state == nw_browser_state_failed)
+			NSLog(@"Local Network access failed: %@", error);
+	});
+	nw_browser_start(gLocalNetworkPermissionBrowser, dispatch_get_main_queue());
+}
 
 @interface
 iEinsteinViewController ()
@@ -62,6 +76,8 @@ iEinsteinViewController ()
 	twoFingerTap.numberOfTouchesRequired = 2;
 	twoFingerTap.numberOfTapsRequired = 1;
 	[self.view addGestureRecognizer:twoFingerTap];
+
+	RequestLocalNetworkPermission();
 }
 
 - (void)handleTwoFingerTap:(UITapGestureRecognizer*)recognizer
