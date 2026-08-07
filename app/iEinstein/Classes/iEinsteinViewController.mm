@@ -47,7 +47,8 @@ RequestLocalNetworkPermission()
 		if (state == nw_browser_state_failed)
 			NSLog(@"Local Network access failed: %@", error);
 	});
-	nw_browser_start(gLocalNetworkPermissionBrowser, dispatch_get_main_queue());
+	nw_browser_set_queue(gLocalNetworkPermissionBrowser, dispatch_get_main_queue());
+	nw_browser_start(gLocalNetworkPermissionBrowser);
 }
 
 @interface
