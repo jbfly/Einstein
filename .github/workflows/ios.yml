@@ -19,7 +19,7 @@ jobs:
           fi
           xcodebuild -version
 
-      - name: Archive unsigned app
+      - name: Build unsigned app
         run: |
           xcodebuild \
             -project _Build_/Xcode/Einstein.xcodeproj \
@@ -27,16 +27,16 @@ jobs:
             -configuration Release \
             -sdk iphoneos \
             -destination 'generic/platform=iOS' \
+            -derivedDataPath "$RUNNER_TEMP/dd" \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY='' \
-            SKIP_INSTALL=NO \
-            archive \
-            -archivePath "$RUNNER_TEMP/Einstein.xcarchive"
+            build
 
       - name: Package unsigned IPA
         run: |
-          APP=$(find "$RUNNER_TEMP/Einstein.xcarchive/Products/Applications" -maxdepth 1 -name '*.app' -print | head -1)
+          APP=$(find "$RUNNER_TEMP/dd/Build/Products" -maxdepth 2 -name '*.app' -print | head -1)
+          echo "Found app: $APP"
           test -n "$APP"
           mkdir -p "$RUNNER_TEMP/Payload"
           cp -R "$APP" "$RUNNER_TEMP/Payload/"
