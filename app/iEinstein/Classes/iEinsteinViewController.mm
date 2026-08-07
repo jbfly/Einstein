@@ -25,7 +25,7 @@
 
 #include "Emulator/TEmulator.h"
 #include "Emulator/Log/TStdOutLog.h"
-#include "Emulator/Network/TNetworkManager.h"
+#include "Emulator/Network/TUsermodeNetwork.h"
 #include "Emulator/Platform/TPlatformManager.h"
 #include "Emulator/Printer/TIOSPrinterManager.h"
 #include "Emulator/ROM/TAIFROMImageWithREXes.h"
@@ -341,7 +341,7 @@ iEinsteinViewController ()
 
 	// Create the network manager.
 
-	mNetworkManager = new TNullNetworkManager(mLog);
+	mNetworkManager = new TUsermodeNetwork(mLog);
 
 	// Create the sound manager.
 

@@ -76,6 +76,7 @@
 		2389E97D1A1E4D4A0001A8C5 /* TLinearCard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C99E3472111B7C07002165EC /* TLinearCard.cpp */; };
 		2389E97E1A1E4D4A0001A8C5 /* TNE2000Card.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C932C4C011A1AB5D00F6A7E4 /* TNE2000Card.cpp */; };
 		2389E97F1A1E4D4A0001A8C5 /* TNetworkManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C962429E11B6A20A00EE66F3 /* TNetworkManager.cpp */; };
+		E8DB57C8BA3A445690F8621B /* TUsermodeNetwork.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C962429511B69A9D00EE66F3 /* TUsermodeNetwork.cpp */; };
 		2389E9801A1E4D4A0001A8C5 /* iEinsteinAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = C94ADB37123E9ADD00406839 /* iEinsteinAppDelegate.mm */; };
 		2389E9811A1E4D4A0001A8C5 /* iEinsteinView.mm in Sources */ = {isa = PBXBuildFile; fileRef = C94ADB38123E9ADD00406839 /* iEinsteinView.mm */; };
 		2389E9821A1E4D4A0001A8C5 /* iEinsteinViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = C94ADB39123E9ADD00406839 /* iEinsteinViewController.mm */; };
@@ -1857,6 +1858,7 @@
 				2389E97D1A1E4D4A0001A8C5 /* TLinearCard.cpp in Sources */,
 				2389E97E1A1E4D4A0001A8C5 /* TNE2000Card.cpp in Sources */,
 				2389E97F1A1E4D4A0001A8C5 /* TNetworkManager.cpp in Sources */,
+				E8DB57C8BA3A445690F8621B /* TUsermodeNetwork.cpp in Sources */,
 				F1E2C2A31E5B5D7A0074F2D3 /* TPathHelper.cpp in Sources */,
 				2389E9801A1E4D4A0001A8C5 /* iEinsteinAppDelegate.mm in Sources */,
 				2389E9811A1E4D4A0001A8C5 /* iEinsteinView.mm in Sources */,

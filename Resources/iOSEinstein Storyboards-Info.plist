@@ -33,6 +33,8 @@
 	<true/>
 	<key>UIFileSharingEnabled</key>
 	<true/>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Einstein connects the emulated Newton to servers on your local network.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>Launch Screen</string>
 	<key>UIMainStoryboardFile</key>
