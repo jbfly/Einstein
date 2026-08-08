@@ -164,11 +164,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-#if !TARGET_OS_WIN32
+#if TARGET_OS_WIN32
+#define EINEGRESS(...)
+#elif defined(__APPLE__)
+#include <os/log.h>
+#define EINEGRESS(...) os_log(OS_LOG_DEFAULT, "EINEGRESS " __VA_ARGS__)
+#else
 #include <syslog.h>
 #define EINEGRESS(...) syslog(LOG_NOTICE, "EINEGRESS " __VA_ARGS__)
-#else
-#define EINEGRESS(...)
 #endif
 
 #if TARGET_OS_WIN32
@@ -2096,7 +2099,7 @@ public:
 
 		LOG_PROTOCOL("| DHCP reply %d:", reply->Get8(0x011c));
 		LOG_HEADER_DO(net->Log(reply, "| W E>N", __LINE__);)
-		EINEGRESS("dhcp %s guest=%u.%u.%u.%u", packetType == kDHCPDiscover ? "OFFER" : "ACK",
+		EINEGRESS("dhcp %{public}s guest=%u.%u.%u.%u", packetType == kDHCPDiscover ? "OFFER" : "ACK",
 			(unsigned int) (kClientIP >> 24), (unsigned int) ((kClientIP >> 16) & 255),
 			(unsigned int) ((kClientIP >> 8) & 255), (unsigned int) (kClientIP & 255));
 
@@ -2125,10 +2128,11 @@ public:
 TUsermodeNetwork::TUsermodeNetwork(TLog* inLog) :
 		TNetworkManager(inLog)
 {
-#if !TARGET_OS_WIN32
+#if !defined(__APPLE__) && !TARGET_OS_WIN32
 	static const bool syslogOpened = (openlog("Einstein", LOG_PID, LOG_USER), true);
 	(void) syslogOpened;
 #endif
+	EINEGRESS("ctor TUsermodeNetwork constructed");
 #if TARGET_OS_WIN32
 	WSADATA wsaData;
 	WORD wVersionRequested = MAKEWORD(2, 2);
@@ -2188,7 +2192,7 @@ TUsermodeNetwork::SendPacket(KUInt8* data, KUInt32 size)
 		{
 			protocolName = "ICMP";
 		}
-		EINEGRESS("frame len=%u ethertype=0x%04x class=IPv4 protocol=%s(%u) dst=%u.%u.%u.%u:%u",
+		EINEGRESS("frame len=%u ethertype=0x%04x class=IPv4 protocol=%{public}s(%u) dst=%u.%u.%u.%u:%u",
 			(unsigned int) size, (unsigned int) type, protocolName, (unsigned int) protocol, (unsigned int) (ip >> 24),
 			(unsigned int) ((ip >> 16) & 255), (unsigned int) ((ip >> 8) & 255), (unsigned int) (ip & 255),
 			(unsigned int) port);
