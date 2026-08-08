@@ -164,6 +164,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+#if TARGET_IOS
+#include <syslog.h>
+#define EINEGRESS(...) syslog(LOG_NOTICE, "EINEGRESS " __VA_ARGS__)
+#else
+#define EINEGRESS(...)
+#endif
+
 #if TARGET_OS_WIN32
 #include <WinSock2.h>
 #include <Ws2tcpip.h>
@@ -1073,6 +1080,10 @@ public:
 		// create a socket
 		mSocket = ::socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
 		if (mSocket == INVALID_SOCKET)
+			EINEGRESS("tcp socket fd=%d errno=%d", mSocket, errno);
+		else
+			EINEGRESS("tcp socket fd=%d", mSocket);
+		if (mSocket == INVALID_SOCKET)
 			return -1;
 		// FIXME: should we remove the handler? Should we remove some kind of not-ACK package?
 		// TODO: send a NACK package to the Newton
@@ -1099,7 +1110,14 @@ public:
 #endif
 
 		// Since we are in non-blocking mode, ::connect will return with an error
+		EINEGRESS("tcp connect begin dst=%u.%u.%u.%u:%u fd=%d",
+			(unsigned int) (theirIP >> 24), (unsigned int) ((theirIP >> 16) & 255),
+			(unsigned int) ((theirIP >> 8) & 255), (unsigned int) (theirIP & 255), (unsigned int) theirPort, mSocket);
 		err = ::connect(mSocket, (struct sockaddr*) &sa, sizeof(sa));
+		EINEGRESS("tcp connect result dst=%u.%u.%u.%u:%u fd=%d result=%d errno=%d",
+			(unsigned int) (theirIP >> 24), (unsigned int) ((theirIP >> 16) & 255),
+			(unsigned int) ((theirIP >> 8) & 255), (unsigned int) (theirIP & 255), (unsigned int) theirPort, mSocket,
+			err, err == -1 ? errno : 0);
 		// We expect an error
 		if (err == -1)
 		{
@@ -1138,6 +1156,8 @@ public:
 #else
 				err = ::getsockopt(mSocket, SOL_SOCKET, SO_ERROR, &socketError, &socketErrorSize);
 #endif
+				EINEGRESS("tcp SO_ERROR fd=%d result=%d socket_error=%d errno=%d", mSocket, err, socketError,
+					err == -1 ? errno : 0);
 			}
 			if (err <= 0 || socketError != 0)
 			{
@@ -2076,6 +2096,9 @@ public:
 
 		LOG_PROTOCOL("| DHCP reply %d:", reply->Get8(0x011c));
 		LOG_HEADER_DO(net->Log(reply, "| W E>N", __LINE__);)
+		EINEGRESS("dhcp %s guest=%u.%u.%u.%u", packetType == kDHCPDiscover ? "OFFER" : "ACK",
+			(unsigned int) (kClientIP >> 24), (unsigned int) ((kClientIP >> 16) & 255),
+			(unsigned int) ((kClientIP >> 8) & 255), (unsigned int) (kClientIP & 255));
 
 		net->Enqueue(reply);
 
@@ -2102,6 +2125,10 @@ public:
 TUsermodeNetwork::TUsermodeNetwork(TLog* inLog) :
 		TNetworkManager(inLog)
 {
+#if TARGET_IOS
+	static const bool syslogOpened = (openlog("Einstein", LOG_PID, LOG_USER), true);
+	(void) syslogOpened;
+#endif
 #if TARGET_OS_WIN32
 	WSADATA wsaData;
 	WORD wVersionRequested = MAKEWORD(2, 2);
@@ -2137,6 +2164,38 @@ TUsermodeNetwork::SendPacket(KUInt8* data, KUInt32 size)
 {
 	int result = 0;
 	Packet packet(data, size, 0); // convert data into a packet
+	KUInt16 type = size >= 14 ? packet.GetType() : 0;
+	if (type == Packet::kNetTypeARP)
+	{
+		EINEGRESS("frame len=%u ethertype=0x%04x class=ARP", (unsigned int) size, (unsigned int) type);
+	} else if (type == Packet::kNetTypeIP && size >= 34)
+	{
+		KUInt8 protocol = packet.GetIPProtocol();
+		KUInt32 ip = packet.GetIPDstIP();
+		KUInt16 port = 0;
+		const char* protocolName = "other";
+		if (protocol == Packet::kIPProtocolTCP)
+		{
+			protocolName = "TCP";
+			if (size >= 38)
+				port = packet.GetTCPDstPort();
+		} else if (protocol == Packet::kIPProtocolUDP)
+		{
+			protocolName = "UDP";
+			if (size >= 38)
+				port = packet.GetUDPDstPort();
+		} else if (protocol == Packet::kIPProtocolICMP)
+		{
+			protocolName = "ICMP";
+		}
+		EINEGRESS("frame len=%u ethertype=0x%04x class=IPv4 protocol=%s(%u) dst=%u.%u.%u.%u:%u",
+			(unsigned int) size, (unsigned int) type, protocolName, (unsigned int) protocol, (unsigned int) (ip >> 24),
+			(unsigned int) ((ip >> 16) & 255), (unsigned int) ((ip >> 8) & 255), (unsigned int) (ip & 255),
+			(unsigned int) port);
+	} else
+	{
+		EINEGRESS("frame len=%u ethertype=0x%04x class=other", (unsigned int) size, (unsigned int) type);
+	}
 	LOG_PROTOCOL(",---- Einstein < Newton -----------------");
 
 	// offer this package to all active handlers
