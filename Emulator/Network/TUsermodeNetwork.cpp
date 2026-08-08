@@ -164,7 +164,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#if TARGET_IOS
+#if !TARGET_OS_WIN32
 #include <syslog.h>
 #define EINEGRESS(...) syslog(LOG_NOTICE, "EINEGRESS " __VA_ARGS__)
 #else
@@ -2125,7 +2125,7 @@ public:
 TUsermodeNetwork::TUsermodeNetwork(TLog* inLog) :
 		TNetworkManager(inLog)
 {
-#if TARGET_IOS
+#if !TARGET_OS_WIN32
 	static const bool syslogOpened = (openlog("Einstein", LOG_PID, LOG_USER), true);
 	(void) syslogOpened;
 #endif
