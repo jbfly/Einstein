@@ -27,7 +27,6 @@
 #include "Emulator/TEmulator.h"
 #include "Emulator/Log/TStdOutLog.h"
 #include "Emulator/Network/TUsermodeNetwork.h"
-#include "Emulator/PCMCIA/TNE2000Card.h"
 #include "Emulator/Platform/TPlatformManager.h"
 #include "Emulator/Printer/TIOSPrinterManager.h"
 #include "Emulator/ROM/TAIFROMImageWithREXes.h"
@@ -174,10 +173,11 @@ iEinsteinViewController ()
 						 message:nil
 				  preferredStyle:UIAlertControllerStyleActionSheet];
 
-	UIAlertAction* noopAction = [UIAlertAction
-		actionWithTitle:@"No Actions Available"
+	UIAlertAction* networkAction = [UIAlertAction
+		actionWithTitle:@"Toggle Network Card"
 				  style:UIAlertActionStyleDefault
 				handler:^(UIAlertAction* action) {
+					mPlatformManager->SendNetworkCardEvent();
 				}];
 
 	UIAlertAction* cancelAction = [UIAlertAction
@@ -185,7 +185,7 @@ iEinsteinViewController ()
 				  style:UIAlertActionStyleCancel
 				handler:nil];
 
-	[alertController addAction:noopAction];
+	[alertController addAction:networkAction];
 	[alertController addAction:cancelAction];
 
 	// Configure popover for iPad
@@ -427,9 +427,6 @@ iEinsteinViewController ()
 		TSerialPorts::kNullDriver,
 		TSerialPorts::kNullDriver);
 	mPlatformManager = mEmulator->GetPlatformManager();
-	// Other frontends insert this card; without it NewtonOS never enables NE2K or transmits.
-	// TPCMCIAController does not own cards, so this leaks one small card object per emulator reset.
-	mPlatformManager->InsertPCCard(0, new TNE2000Card());
 	mPlatformManager->SetDocDir([docdir fileSystemRepresentation]);
 	mPrinterManager->SetMemory(mEmulator->GetMemory());
 
